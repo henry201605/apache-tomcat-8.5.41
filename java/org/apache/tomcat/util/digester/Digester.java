@@ -1524,10 +1524,11 @@ public class Digester extends DefaultHandler2 {
      * @param pattern Element matching pattern
      * @param rule Rule to be registered
      */
+    //addRule：调用rule的begin 、body、end、finish方法来解析xml，入栈和出栈给对象赋值
     public void addRule(String pattern, Rule rule) {
 
-        rule.setDigester(this);
-        getRules().add(pattern, rule);
+        rule.setDigester(this); //设置digester，将保存创建的对象的实例
+        getRules().add(pattern, rule);//这里将会返回Rules接口的实现类。然后再调用Rules.add()来添加Rule实例
 
     }
 
@@ -1537,6 +1538,7 @@ public class Digester extends DefaultHandler2 {
      *
      * @param ruleSet The RuleSet instance to configure from
      */
+    //addRuleSet：调用addRuleInstances来解析xml标签
     public void addRuleSet(RuleSet ruleSet) {
 
         String oldNamespaceURI = getRuleNamespaceURI();
@@ -1640,14 +1642,18 @@ public class Digester extends DefaultHandler2 {
 
 
     /**
-     * Add an "object create" rule for the specified parameters.
      *
-     * @param pattern Element matching pattern
-     * @param className Default Java class name to be created
-     * @param attributeName Attribute name that optionally overrides
+     * 增加对象创建规则.遇到起始标签的元素，初始化一个实例对象入栈
+     *
+     * Add an "object create" rule for the specified parameters.
+     *为指定的参数增加一个对象创建规则.
+     * @param pattern Element matching pattern 元素匹配模式
+     * @param className Default Java class name to be created 要创建的java类的名字
+     * @param attributeName Attribute name that optionally overrides 属性名称可以覆盖要创建的默认Java类名称
      *  the default Java class name to be created
      * @see ObjectCreateRule
      */
+//    获取xml文件中attributes属性名为：className所对应的值替换第二个参数
     public void addObjectCreate(String pattern, String className,
                                 String attributeName) {
 
@@ -1660,6 +1666,7 @@ public class Digester extends DefaultHandler2 {
     /**
      * Add a "set next" rule for the specified parameters.
      *
+     *
      * @param pattern Element matching pattern
      * @param methodName Method name to call on the parent element
      * @param paramType Java class name of the expected parameter type
@@ -1668,6 +1675,7 @@ public class Digester extends DefaultHandler2 {
      *  for a <code>boolean</code> parameter)
      * @see SetNextRule
      */
+    //增加set next规则.遇到下一标签时的动作,即反射调用方法名为methodName的方法。
     public void addSetNext(String pattern, String methodName,
                            String paramType) {
 
@@ -1678,6 +1686,8 @@ public class Digester extends DefaultHandler2 {
 
 
     /**
+     * 增加设置属性规则.遇到某个属性名，使用setter来赋值
+     *
      * Add a "set properties" rule for the specified parameters.
      *
      * @param pattern Element matching pattern

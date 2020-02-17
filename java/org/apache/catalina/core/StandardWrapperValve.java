@@ -88,6 +88,10 @@ final class StandardWrapperValve
      * @exception IOException if an input/output error occurred
      * @exception ServletException if a servlet error occurred
      */
+    /*
+    StandardWrapperValve：：StandardWrapper 中唯一（basic）的阀门，主要用于调用StandardWrapper 的 loadServlet 方法获取 Servlet 实例、
+    调用 ApplicationFilterFactory的createFilterChain 方法创建 request 过滤器链、记录请求次数、请求时间、请求最大时间、最小时间等
+    */
     @Override
     public final void invoke(Request request, Response response)
         throws IOException, ServletException {
@@ -130,7 +134,7 @@ final class StandardWrapperValve
         // Allocate a servlet instance to process this request
         try {
             if (!unavailable) {
-                //调用StandardWrapper 的 loadServlet 方法获取 Servlet 实例
+               /*调用StandardWrapper 的 loadServlet 方法获取 Servlet 实例*/
                 servlet = wrapper.allocate();
             }
         } catch (UnavailableException e) {
@@ -169,8 +173,8 @@ final class StandardWrapperValve
         request.setAttribute(Globals.DISPATCHER_REQUEST_PATH_ATTR,
                 requestPathMB);
         // Create the filter chain for this request
-//        调用 ApplicationFilterFactory的createFilterChain 方法创建 request 过滤器链、
-//        记录请求次数、请求时间、请求最大时间、最小时间等
+        /* 调用 ApplicationFilterFactory的createFilterChain 方法创建 request 过滤器链、
+        记录请求次数、请求时间、请求最大时间、最小时间等*/
         ApplicationFilterChain filterChain =
                 ApplicationFilterFactory.createFilterChain(request, wrapper, servlet);
 
@@ -185,8 +189,9 @@ final class StandardWrapperValve
                         if (request.isAsyncDispatching()) {
                             ((AsyncContextImpl)request.getAsyncContext()).doInternalDispatch();
                         } else {
-                            //执行了过滤器链中每一个过滤器的职责，过滤器执行后就是调用请求
+                           /*执行了过滤器链中每一个过滤器的职责，过滤器执行后就是调用请求
                             // servlet 的 service 方法，也就是请求url最终要执行的逻辑
+                            */
                             filterChain.doFilter(request.getRequest(),
                                     response.getResponse());
                         }

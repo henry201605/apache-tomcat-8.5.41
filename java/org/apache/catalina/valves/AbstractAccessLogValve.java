@@ -614,9 +614,12 @@ public abstract class AbstractAccessLogValve extends ValveBase implements Access
      * @exception IOException if an input/output error has occurred
      * @exception ServletException if a servlet error has occurred
      */
+
     @Override
     public void invoke(Request request, Response response) throws IOException,
             ServletException {
+        /*AccessLogValve：StandardHost 中第一个（first）阀门，主要用于Pipeline执行结束后记录日志信息*/
+        //--->ErrorReportValve
         getNext().invoke(request, response);
     }
 

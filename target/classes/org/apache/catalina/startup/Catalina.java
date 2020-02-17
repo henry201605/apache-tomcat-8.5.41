@@ -279,9 +279,21 @@ public class Catalina {
         digester.setUseContextClassLoader(true);
 
         // Configure the actions we will be using
+        /**1、
+         * 遇到<server>标签时创建StandardServer实例
+         * 设置StandardServer类内部的相关属性
+         * 并调用Catalina.setServer()方法设置server
+         */
         digester.addObjectCreate("Server",
                                  "org.apache.catalina.core.StandardServer",
                                  "className");
+        /**
+         * digester.addSetProperties("Server");
+         * 对应标签<Server port="8005" shutdown="SHUTDOWN">
+         *
+         * 遇到匹配模式为：Server。addSetProperties方法会反射调用StandardServer对象的setPort(int)
+         * 和setShutdown（String）两个方法设置属性
+         */
         digester.addSetProperties("Server");
         digester.addSetNext("Server",
                             "setServer",
@@ -294,6 +306,11 @@ public class Catalina {
                             "setGlobalNamingResources",
                             "org.apache.catalina.deploy.NamingResourcesImpl");
 
+        /**2、
+         * 遇到<Server>标签的子标签<Listener>==》对应匹配模式"Server/Listener"时
+         *创建Listener实例，创建类名通过<Listener className=要创建的全类名(包名+类名)>获取属性className的值进行创建。
+         *调用StandardServer的addLifecycleListener（）为server添加监听器
+         */
         digester.addObjectCreate("Server/Listener",
                                  null, // MUST be specified in the element
                                  "className");
@@ -302,6 +319,11 @@ public class Catalina {
                             "addLifecycleListener",
                             "org.apache.catalina.LifecycleListener");
 
+        /**3、
+         * <Service>标签时即匹配模式为："Server/Service"创建StandardService实例，放入Stack栈中，
+         * 调用addSetProperties方法为StandardService设置相关属性
+         * 调用Service的parent=stack.peek(1)即Server对象的addService方法为与Server关联。
+         */
         digester.addObjectCreate("Server/Service",
                                  "org.apache.catalina.core.StandardService",
                                  "className");
@@ -310,6 +332,11 @@ public class Catalina {
                             "addService",
                             "org.apache.catalina.Service");
 
+        /**
+         *4、
+         * 同2一样为Service设置监听器
+         *
+         */
         digester.addObjectCreate("Server/Service/Listener",
                                  null, // MUST be specified in the element
                                  "className");
@@ -319,6 +346,12 @@ public class Catalina {
                             "org.apache.catalina.LifecycleListener");
 
         //Executor
+        /**
+         * 5、
+         * <executor>标签时即匹配模式："Server/Service/Executor" 生成StandardThreadExecutor实例，
+         * 设置StandardThreadExecutor的属性
+         *调用其父类Service的addExecutor方法与Service关联
+         */
         digester.addObjectCreate("Server/Service/Executor",
                          "org.apache.catalina.core.StandardThreadExecutor",
                          "className");
@@ -328,7 +361,12 @@ public class Catalina {
                             "addExecutor",
                             "org.apache.catalina.Executor");
 
-
+        /**
+         * 6、
+         * 调用addRule方法如上一样
+         * 创建Connector实例，设置属性，调用StandardService.addConnector()。
+         * 为Connector设置监听器
+         */
         digester.addRule("Server/Service/Connector",
                          new ConnectorCreateRule());
         digester.addRule("Server/Service/Connector",
@@ -369,6 +407,10 @@ public class Catalina {
                             "org.apache.coyote.UpgradeProtocol");
 
         // Add RuleSets for nested elements
+        /**
+         * 7、
+         * 调用addRuleSet（）方法
+         */
         digester.addRuleSet(new NamingRuleSet("Server/GlobalNamingResources/"));
         digester.addRuleSet(new EngineRuleSet("Server/Service/"));
         digester.addRuleSet(new HostRuleSet("Server/Service/Engine/"));

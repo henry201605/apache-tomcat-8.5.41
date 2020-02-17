@@ -60,7 +60,7 @@ import org.apache.tomcat.util.res.StringManager;
 /**
  * Holds and manages the naming resources defined in the J2EE Enterprise
  * Naming Context and their associated JNDI context.
- *
+ *保存并管理J2EE企业命名上下文中定义的命名资源及其关联的JNDI上下文
  * @author Remy Maucherat
  */
 public class NamingResourcesImpl extends LifecycleMBeanBase
@@ -966,6 +966,7 @@ public class NamingResourcesImpl extends LifecycleMBeanBase
 
     @Override
     protected void startInternal() throws LifecycleException {
+//        这里也发送的一个CONFIGURE_START_EVENT=“config_start”事件,设置状态为starting
         fireLifecycleEvent(CONFIGURE_START_EVENT, null);
         setState(LifecycleState.STARTING);
     }

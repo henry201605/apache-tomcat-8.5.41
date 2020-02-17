@@ -515,9 +515,11 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
                     getName()));
         // 完成jmx注册
         if (oname == null) {
-            // Component not pre-registered so register it
+            // Component not pre-registered so register it 注册protocolHandler组件
+            //创建thread pool线程池的MBean的名称
             oname = createObjectName();
             if (oname != null) {
+                //注册线程池组件
                 Registry.getRegistry(null, null).registerComponent(this, oname,
                     null);
             }
@@ -534,6 +536,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
                         "abstractProtocolHandler.mbeanRegistrationFailed",
                         tpOname, getName()), e);
             }
+            //注册GlobalRequestProcessor全局请求处理器组件
             rgOname=new ObjectName(domain +
                     ":type=GlobalRequestProcessor,name=" + getName());
             Registry.getRegistry(null, null).registerComponent(
@@ -541,6 +544,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
         }
 
         String endpointName = getName();
+        //这里从1开始length-1结束是为了去掉首尾双引号
         endpoint.setName(endpointName.substring(1, endpointName.length()-1));
 
         try {
@@ -759,7 +763,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
 
                 SocketState state = SocketState.CLOSED;
                 do {
-                    //请求处理
+                    /*------继续处理请求，此处为重点-----*/
                     state = processor.process(wrapper, status);
 
                     if (state == SocketState.UPGRADING) {

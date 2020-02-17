@@ -778,17 +778,22 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      *  that prevents this component from being used
      */
     /**
-     * 先是由LifecycleBase统一发出STARTING_PREP事件，StandardServer额外还会发出CONFIGURE_START_EVENT、STARTING事件，用于通知LifecycleListener在启动前做一些准备工作，比如NamingContextListener会处理CONFIGURE_START_EVENT事件，实例化tomcat相关的上下文，以及ContextResource资源
+     * 先是由LifecycleBase统一发出STARTING_PREP事件，StandardServer额外还会发出CONFIGURE_START_EVENT、STARTING事件，
+     * 用于通知LifecycleListener在启动前做一些准备工作，比如NamingContextListener会处理CONFIGURE_START_EVENT事件，
+     * 实例化tomcat相关的上下文，以及ContextResource资源
      *
-     * 然后，启动内部的NamingResourcesImpl实例，这个类封装了各种各样的数据，比如ContextEnvironment、ContextResource、Container等等，它用于Resource资源的初始化，以及为webapp应用提供相关的数据资源，比如 JNDI 数据源(对应ContextResource)
+     * 然后，启动内部的NamingResourcesImpl实例，这个类封装了各种各样的数据，比如ContextEnvironment、ContextResource、Container等等
+     * ，它用于Resource资源的初始化，以及为webapp应用提供相关的数据资源，比如 JNDI 数据源(对应ContextResource)
      * @throws LifecycleException
      */
     @Override
     protected void startInternal() throws LifecycleException {
 
+        //首先用fireLifecycleEvent()方法发送CONFIGURE_START_EVENT=“config_start”事件
         fireLifecycleEvent(CONFIGURE_START_EVENT, null);
         setState(LifecycleState.STARTING);
 
+//        这里也发送的一个CONFIGURE_START_EVENT=“config_start”事件,设置状态为starting
         globalNamingResources.start();
 
         // Start our defined Services

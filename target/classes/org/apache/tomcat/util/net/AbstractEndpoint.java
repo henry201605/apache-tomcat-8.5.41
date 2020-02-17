@@ -808,9 +808,15 @@ public abstract class AbstractEndpoint<S> {
         startInternal();
     }
 
+
     protected final void startAcceptorThreads() {
-        int count = getAcceptorThreadCount();
-        acceptors = new Acceptor[count];
+        int count = getAcceptorThreadCount();//1
+        /*开启线程，循环等待ServerSocket.accept()方法接收到新的连接。然后会将这个socket注册到Poller这个轮询线程。
+        生成一个KeyAttachment对象与socket相关联*/
+//        当这个socket发送请求时，Poller线程就收到连接请求后会将调用Poller线程的run()，processKey(sk, attachment)---->NioEndpoint.processSocket(KeyAttachment attachment, SocketStatus status, boolean dispatch)方法，这个方法会开启内部类NioEndpoint.SocketProcessor线程的run()方法
+//　　 其内部执行调用NioEndpoint.Handler.process(SocketWrapper<NioChannel> socket, SocketStatus status)。---调用的是子类AbstractProtocol.AbstractConnectionHandler.process()
+
+        acceptors = new Acceptor[count];//创建Acceptor线程对象
 
         for (int i = 0; i < count; i++) {
             acceptors[i] = createAcceptor();
@@ -869,6 +875,10 @@ public abstract class AbstractEndpoint<S> {
 
     protected abstract Log getLog();
 
+    /*初始化LimintLatch,connectionLimitLatch变量。这个变量用来统计endpoint处理的连接数，并限制最大连接数
+        通过使用LimintLatch这个类实现限制最大socket连接数
+        tomcat默认的最大连接数位10000
+     */
     protected LimitLatch initializeConnectionLatch() {
         if (maxConnections==-1) return null;
         if (connectionLimitLatch==null) {

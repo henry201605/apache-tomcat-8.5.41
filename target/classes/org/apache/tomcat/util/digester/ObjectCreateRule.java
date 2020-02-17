@@ -90,6 +90,7 @@ public class ObjectCreateRule extends Rule {
      *   the element name otherwise
      * @param attributes The attribute list for this element
      */
+    //这个方法将通过类名加载Class然后调用class.newInstance()生成类实例，最后放入digest的对象栈顶
     @Override
     public void begin(String namespace, String name, Attributes attributes)
             throws Exception {

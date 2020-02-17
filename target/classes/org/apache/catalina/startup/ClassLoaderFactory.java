@@ -301,7 +301,12 @@ public final class ClassLoaderFactory {
         return new URL(fileUrlString);
     }
 
-
+    /**
+     * DIR：表示整个目录下的资源，包括所有clsss、jar包及其它类型资源。
+     * GLOB：表示整个目录下所有jar包资源，仅仅是.jar后缀的资源。
+     * JAR：表示单个jar包资源。
+     * URL：表示网络上得某个jar包资源。
+     */
     public static enum RepositoryType {
         DIR,
         GLOB,

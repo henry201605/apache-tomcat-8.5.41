@@ -103,13 +103,14 @@ public class MapperListener extends LifecycleMBeanBase
 
 //<Engine name="Catalina" defaultHost="localhost">
         findDefaultHost();
-
+//        为StandardEngine和其子Container设置监听器
         addListeners(engine);
 
         Container[] conHosts = engine.findChildren();
         for (Container conHost : conHosts) {
             Host host = (Host) conHost;
             if (!LifecycleState.NEW.equals(host.getState())) {
+                //用一个变量Mapper mapper持有Host，为StandardEngine和其子Container设置监听器为当前类MapperListener
                 //注册host、context及wrapper信息
                 // Registering the host will register the context and wrappers
                 registerHost(host);
@@ -303,6 +304,7 @@ public class MapperListener extends LifecycleMBeanBase
     private void registerHost(Host host) {
 
         String[] aliases = host.findAliases();
+//        用一个变量Mapper mapper持有Host
         mapper.addHost(host.getName(), aliases, host);
 
         for (Container container : host.findChildren()) {

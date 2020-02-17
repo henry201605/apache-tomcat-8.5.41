@@ -105,6 +105,8 @@ final class StandardContextValve extends ValveBase {
         if (request.isAsyncSupported()) {
             request.setAsyncSupported(wrapper.getPipeline().isAsyncSupported());
         }
+        /*StandardContextValve：StandContext 中最后一个（basic）阀门，主要用于从request 中选择其 wrapper 映射的 StandardWrapper 容器以及控制禁止直接对  /META-INF/ 和 /WEB-INF/ 目录下资源的直接访问*/
+       //---->StandardWrapperValve
         wrapper.getPipeline().getFirst().invoke(request, response);
     }
 }

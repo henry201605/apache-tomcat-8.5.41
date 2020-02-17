@@ -342,8 +342,26 @@ public class CoyoteAdapter implements Adapter {
                 //check valves if we support async
                 request.setAsyncSupported(connector.getService().getContainer().getPipeline().isAsyncSupported());
                 // Calling the container
-//                采用责任链模式层层调用处理请求
+                /*-------------采用责任链模式层层调用处理请求-------*/
+                //getFirst()获得的是Pipeline存放的第一个Valve对象。Valve阀门
                 connector.getService().getContainer().getPipeline().getFirst().invoke(request, response);
+                /*
+                * StandardEgineValve：StandardEngine 中唯一（basic）的阀门，主要用于从request 中选择其host映射的StandardHost容器
+
+                AccessLogValve：StandardHost 中第一个（first）阀门，主要用于Pipeline执行结束后记录日志信息
+
+                ErrorReportValve：StandardHost 中第二个（next）阀门，主要用于获取request中的错误信息，并将错误信息封装到response中返回给用户展示
+
+                StandardHostValve：StandardHost 中最后（basic）一个阀门，主要用于从request 中选择其context映射的 StandardHost 容器 和获取 request 中的 Session
+
+                AuthenticatorValve：StandContext 中第一个（first）阀门，主要用于用户权限的验证以及对response 设置header部分属性
+
+                StandardContextValve：StandContext 中最后一个（basic）阀门，主要用于从request 中选择其 wrapper 映射的 StandardWrapper 容器以及控制禁止直接对  /META-INF/ 和 /WEB-INF/ 目录下资源的直接访问
+
+                StandardWrapperValve：StandardWrapper 中唯一（basic）的阀门，主要用于调用StandardWrapper 的 loadServlet 方法获取 Servlet 实例、调用 ApplicationFilterFactory的createFilterChain 方法创建 request 过滤器链、记录请求次数、请求时间、请求最大时间、最小时间等
+                ————————————————
+                版权声明：本文为CSDN博主「dragon@oo」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+                原文链接：https://blog.csdn.net/ywlmsm1224811/article/details/91384813*/
             }
             AsyncContextImpl asyncConImpl = (AsyncContextImpl)request.getAsyncContext();
             if (asyncConImpl != null) {

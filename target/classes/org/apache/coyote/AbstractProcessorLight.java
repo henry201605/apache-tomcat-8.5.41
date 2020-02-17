@@ -57,7 +57,7 @@ public abstract class AbstractProcessorLight implements Processor {
                     // release() which will recycle the processor (and input
                     // buffer) deleting any pipe-lined data. To avoid this,
                     // process it now.
-                    //调用Http11Processor 的 service方法
+                    /*------继续处理请求，此处为重点--调用Http11Processor 的 service方法---*/
                     state = service(socketWrapper);
                 }
             } else if (status == SocketEvent.OPEN_WRITE) {

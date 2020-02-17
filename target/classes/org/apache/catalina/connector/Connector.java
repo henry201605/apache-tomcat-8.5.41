@@ -984,7 +984,7 @@ public class Connector extends LifecycleMBeanBase  {
         // 初始化Coyote适配器，这个适配器是用于Coyote的Request、Response与HttpServlet的Request、Response适配的
         adapter = new CoyoteAdapter(this);
 
-        // protocolHandler需要指定Adapter用于处理请求
+        // protocolHandler需要指定Adapter用于处理请求, 处理器是单线程的
         protocolHandler.setAdapter(adapter);
 
         // Make sure parseBodyMethodsSet has a default
@@ -1022,7 +1022,7 @@ public class Connector extends LifecycleMBeanBase  {
 
     /**
      * Begin processing requests via this Connector.
-     *
+     *开始处理请求
      * @exception LifecycleException if a fatal startup error occurs
      */
     @Override

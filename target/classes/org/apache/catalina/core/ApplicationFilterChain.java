@@ -162,7 +162,7 @@ final class ApplicationFilterChain implements FilterChain {
                     throw new ServletException(e.getMessage(), e);
             }
         } else {
-            //
+            /*------执行----------*/
             internalDoFilter(request,response);
         }
     }
@@ -229,8 +229,8 @@ final class ApplicationFilterChain implements FilterChain {
                                            args,
                                            principal);
             } else {
-                //过滤器执行后调用servlet的具体处理逻辑
-                /**
+                /*
+                 过滤器执行后调用servlet的具体处理逻辑
                  * tomcat 默认的 Servlet 只有 DefaultServlet（处理静态资源，比如html、图片等）和 JspServlet
                  */
                 servlet.service(request, response);

@@ -457,6 +457,10 @@ public class Registry implements RegistryMBean, MBeanRegistration  {
      * @return the managed bean
      * @throws Exception An error occurred
      */
+    /*在注册的时候StandardServer的时候，tomcat会在Register的descriptors和descriptorsByClass
+    查找对应的ManagedBean信息，如果没有Register中没有存储这个信息，
+    会再次尝试加载XML文件中预定义的ManagedBean信息，如果不存在XML文件，最后会用反射的方式，
+    基于StandardServer类生成对应的ManagedBean信息，随后tomcat用这个对象去注册StandardServer*/
     public ManagedBean findManagedBean(Object bean, Class<?> beanClass,
             String type) throws Exception {
         if( bean!=null && beanClass==null ) {

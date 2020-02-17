@@ -75,7 +75,9 @@ public class ErrorReportValve extends ValveBase {
     @Override
     public void invoke(Request request, Response response) throws IOException, ServletException {
 
+        /*ErrorReportValve：StandardHost 中第二个（next）阀门，主要用于获取request中的错误信息，并将错误信息封装到response中返回给用户展示*/
         // Perform the request
+        //--->StandardHostValve
         getNext().invoke(request, response);
 
         if (response.isCommitted()) {

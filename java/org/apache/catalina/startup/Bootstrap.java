@@ -144,6 +144,7 @@ public final class Bootstrap {
     private void initClassLoaders() {
         try {
 
+//            定义时使用ClassLoader定义，但是创建返回的是URLClassLoader。公有类定义，子类返回，这个思路值得借鉴
             // 从catalina.properties中读取common.loader配置作为common类加载的路径
             commonLoader = createClassLoader("common", null);
 
@@ -206,6 +207,8 @@ public final class Bootstrap {
             }
         }
 
+        //最后调用这个方法将repositories内存放的类和资源的路径绑定到commonLoader。
+        // 这里返回的是new URLClassLoader
         return ClassLoaderFactory.createClassLoader(repositories, parent);
     }
 
@@ -481,6 +484,7 @@ public final class Bootstrap {
                 t.printStackTrace();
                 return;
             }
+            //设置守护进程
             daemon = bootstrap;
         } else {
             // When running as a service the call to stop will be on a new
@@ -492,6 +496,7 @@ public final class Bootstrap {
         try {
             String command = "start";
             if (args.length > 0) {
+                //识别启动bootstrap时传递的参数
                 command = args[args.length - 1];
             }
 

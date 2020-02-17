@@ -215,11 +215,19 @@ public class NamingContextListener
 
         container = event.getLifecycle();
 
+        /**
+         * 这个事件会被NamingContextListener监听器接收，会为StandardServer的属性globalNamingResources
+         * 设置监听器为this当前类NamingContextListener
+         *
+         * 然后生成一个NamingContext命名上下文对象（这个上下文对象联系着JNDI Context）
+         */
         if (container instanceof Context) {
+            //Context
             namingResources = ((Context) container).getNamingResources();
             logger = log;
             token = ((Context) container).getNamingToken();
         } else if (container instanceof Server) {
+            //Server
             namingResources = ((Server) container).getGlobalNamingResources();
             token = ((Server) container).getNamingToken();
         } else {
@@ -249,12 +257,14 @@ public class NamingContextListener
                 ContextAccessController.setWritable(getName(), token);
 
                 try {
+                //生成一个NamingContext命名上下文对象
                     createNamingContext();
                 } catch (NamingException e) {
                     logger.error
                         (sm.getString("naming.namingContextCreationFailed", e));
                 }
 
+                //会为StandardServer的属性globalNamingResources设置监听器为this当前类NamingContextListener
                 namingResources.addPropertyChangeListener(this);
 
                 // Binding the naming context to the class loader
@@ -624,7 +634,7 @@ public class NamingContextListener
     /**
      * Create and initialize the JNDI naming context.
      */
-    private void createNamingContext()
+    private void    createNamingContext()
         throws NamingException {
 
         // Creating the comp subcontext

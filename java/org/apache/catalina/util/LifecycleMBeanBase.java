@@ -72,7 +72,9 @@ public abstract class LifecycleMBeanBase extends LifecycleBase
     protected void initInternal() throws LifecycleException {
         // If oname is not null then registration has already happened via
         // preRegister().
+        //oname不为空，说明已经注册过了
         if (oname == null) {
+            //获取注册表，返回MBeanServer instance实例
             mserver = Registry.getRegistry(null, null).getMBeanServer();
 
             oname = register(this, getObjectNameKeyProperties());
@@ -161,6 +163,11 @@ public abstract class LifecycleMBeanBase extends LifecycleBase
      *                                  object
      *
      * @return  The name used to register the object
+     */
+    /**这个方法使子类轻松地注册。不使用MBeanServer实现JmxEnabled的其他组件。
+     * obj:向这个对象注册
+     * objectNameKeyProperties：用于注册对象的对象名称的关键属性组件
+     *  这个方法将Component实例注册到LifecycleMBeanBase
      */
     protected final ObjectName register(Object obj,
             String objectNameKeyProperties) {

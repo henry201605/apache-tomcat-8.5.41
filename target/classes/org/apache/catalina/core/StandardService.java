@@ -406,6 +406,8 @@ public class StandardService extends LifecycleMBeanBase implements Service {
      * {@link Container}s) and implement the requirements of
      * {@link org.apache.catalina.util.LifecycleBase#startInternal()}.
      *
+     *启动嵌套组件StandardThreadExecutor，Connector和StandardEngine
+     *
      * @exception LifecycleException if this component detects a fatal error
      *  that prevents this component from being used
      */
@@ -423,6 +425,10 @@ public class StandardService extends LifecycleMBeanBase implements Service {
             }
         }
 
+        /**
+         * 执行提交的Runnable任务的对象。这个接口提供了一种将任务提交与每个任务如何运行的机制解耦的方法，
+         * 包括线程使用的细节，调度等。通常使用Executor而不是显式地创建线程。
+         */
         synchronized (executors) {
             for (Executor executor: executors) {
                 executor.start();
@@ -522,10 +528,11 @@ public class StandardService extends LifecycleMBeanBase implements Service {
     /**
      * Invoke a pre-startup initialization. This is used to allow connectors
      * to bind to restricted ports under Unix operating environments.
+     *
+     * 调用预启动初始化。这用于允许connectors绑定到Unix操作环境下的受限端口。
      */
     @Override
-    protected void
-    initInternal() throws LifecycleException {
+    protected void initInternal() throws LifecycleException {
         // 往jmx中注册自己
         super.initInternal();
 
@@ -536,6 +543,11 @@ public class StandardService extends LifecycleMBeanBase implements Service {
 
         // Initialize any Executors
         // 存在Executor线程池，则进行初始化，默认是没有的
+        /**
+         * 其实就是为Executor指定domain，
+         * 然后使用StandardThreadExecutor.initInteral()方法
+         * 向MBeanServer注册Executor组件（跟server和service调用init()过程一样）
+         */
         for (Executor executor : findExecutors()) {
             if (executor instanceof JmxEnabled) {
                 ((JmxEnabled) executor).setDomain(getDomain());

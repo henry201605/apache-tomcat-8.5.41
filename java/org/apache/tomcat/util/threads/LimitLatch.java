@@ -28,6 +28,7 @@ import org.apache.juli.logging.LogFactory;
  * after which all subsequent requests to acquire the latch will be placed in a
  * FIFO queue until one of the shares is returned.
  */
+//共享锁存器允许获取有限次数的锁存器，之后，所有后续获取锁存器的请求将被置于FIFO队列中，直到其中一个共享被返回。
 public class LimitLatch {
 
     private static final Log log = LogFactory.getLog(LimitLatch.class);

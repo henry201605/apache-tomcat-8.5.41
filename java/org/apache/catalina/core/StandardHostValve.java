@@ -137,6 +137,8 @@ final class StandardHostValve extends ValveBase {
             // defined error pages.
             try {
                 if (!asyncAtStart || asyncDispatching) {
+                    /*StandardHostValve：StandardHost 中最后（basic）一个阀门，主要用于从request 中选择其context映射的 StandardHost 容器 和获取 request 中的 Session*/
+                   //-------->AuthenticatorValve
                     context.getPipeline().getFirst().invoke(request, response);
                 } else {
                     // Make sure this request/response is here because an error
