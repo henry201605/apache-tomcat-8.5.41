@@ -689,7 +689,7 @@ public final class Mapper {
         }
         host.toChars();
         uri.toChars();
-        //继续调用
+        /*继续调用*/
         internalMap(host.getCharChunk(), uri.getCharChunk(), version,
                 mappingData);
     }

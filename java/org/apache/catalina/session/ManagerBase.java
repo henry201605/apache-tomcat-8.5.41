@@ -530,6 +530,7 @@ public abstract class ManagerBase extends LifecycleMBeanBase implements Manager 
      * <p>
      * Direct call to {@link #processExpires()}
      */
+    /*processExpiresFrequency默认值是6，那其实最后就是6*10=60秒执行一次processExpires，具体如何检测过期在session的isValid方法中：*/
     @Override
     public void backgroundProcess() {
         count = (count + 1) % processExpiresFrequency;
@@ -641,7 +642,7 @@ public abstract class ManagerBase extends LifecycleMBeanBase implements Manager 
 
     @Override
     public Session createSession(String sessionId) {
-
+//        是个session数量控制逻辑，超过上限则抛异常退出
         if ((maxActiveSessions >= 0) &&
                 (getActiveSessions() >= maxActiveSessions)) {
             rejectedSessions++;
@@ -651,6 +652,7 @@ public abstract class ManagerBase extends LifecycleMBeanBase implements Manager 
         }
 
         // Recycle or create a Session instance
+        //创建一个StandardSession实例
         Session session = createEmptySession();
 
         // Initialize the properties of the new session and return it
@@ -660,8 +662,12 @@ public abstract class ManagerBase extends LifecycleMBeanBase implements Manager 
         session.setMaxInactiveInterval(getContext().getSessionTimeout() * 60);
         String id = sessionId;
         if (id == null) {
+            /*生成sessionId*/
             id = generateSessionId();
         }
+        /*把session放入ConcurrentHashMap中*/
+        /*protected Map<String, Session> sessions = new ConcurrentHashMap<>();
+        * sessions.put(session.getIdInternal(), session);*/
         session.setId(id);
         sessionCounter++;
 
@@ -820,6 +826,8 @@ public abstract class ManagerBase extends LifecycleMBeanBase implements Manager 
 
         String result = null;
 
+        //创建jsessionid的方式是由tomcat内置的加密算法算出一个随机的jsessionid，如果此jsessionid已经存在，
+        // 则重新计算一个新的，直到确保现在计算的jsessionid唯一。
         do {
             if (result != null) {
                 // Not thread-safe but if one of multiple increments is lost

@@ -944,7 +944,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
  * </Host>
  */
         for (int i = 0; i < children.length; i++) {
-            // StartChild()调用ContainerBase下的一个个子容器的call方法
+            // StartChild()调用ContainerBase下的一个个子容器的call方法,StartChild().call()
             results.add(startStopExecutor.submit(new StartChild(children[i])));
         }
 

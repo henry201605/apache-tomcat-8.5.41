@@ -668,7 +668,7 @@ public class CoyoteAdapter implements Adapter {
 
         while (mapRequired) {
             // This will map the the latest version by default
-            //根据 host 从 hosts 列表中获取需要使用的 Host
+            /*根据 host 从 hosts 列表中获取需要使用的 Host*/
             connector.getService().getMapper().map(serverName, decodedURI,
                     version, request.getMappingData());
 
@@ -694,6 +694,8 @@ public class CoyoteAdapter implements Adapter {
                     .contains(SessionTrackingMode.URL)) {
 
                 // Get the session ID if there was one
+                /*首先去url解析sessionId，如果获取不到则去cookie中获取，此处的SessionUriParamName=jsessionid；
+                在cookie被浏览器禁用的情况下，我们可以看到url后面跟着参数jsessionid=xxxxxx；*/
                 sessionID = request.getPathParameter(
                         SessionConfig.getSessionUriParamName(
                                 request.getContext()));
@@ -704,6 +706,7 @@ public class CoyoteAdapter implements Adapter {
             }
 
             // Look for session ID in cookies and SSL session
+            /*去cookie中获取*/
             parseSessionCookiesId(request);
             parseSessionSslId(request);
 
@@ -1011,7 +1014,7 @@ public class CoyoteAdapter implements Adapter {
         }
 
         String sessionCookieName = SessionConfig.getSessionCookieName(context);
-
+        /*sessionCookieName也是jsessionid，然后遍历cookie，从里面找出name=jsessionid的值赋值给request的requestedSessionId属性；*/
         for (int i = 0; i < count; i++) {
             ServerCookie scookie = serverCookies.getCookie(i);
             if (scookie.getName().equals(sessionCookieName)) {

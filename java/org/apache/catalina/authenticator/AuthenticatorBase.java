@@ -519,6 +519,9 @@ public abstract class AuthenticatorBase extends ValveBase
             if (log.isDebugEnabled()) {
                 log.debug(" Not subject to any constraint");
             }
+            /*AuthenticatorValve：StandContext 中第一个（first）阀门，主要用于用户权限的验证以及对response 设置header部分属性
+            -----> StandardContextValve
+            */
             getNext().invoke(request, response);
             return;
         }

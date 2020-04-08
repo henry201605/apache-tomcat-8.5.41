@@ -731,6 +731,7 @@ public class StandardHost extends ContainerBase implements Host {
         if (!(child instanceof Context))
             throw new IllegalArgumentException
                 (sm.getString("standardHost.notContext"));
+        //添加子容器----》Context
         super.addChild(child);
 
     }

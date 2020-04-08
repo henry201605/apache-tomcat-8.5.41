@@ -84,7 +84,7 @@ final class StandardEngineValve extends ValveBase {
         }
         /*StandardEgineValve：StandardEngine 中唯一（basic）的阀门，主要用于从request 中选择其host映射的StandardHost容器*/
         // Ask this Host to process this request
-        // -->AccessLogValve
+        // -->AbstractAccessLogValve
         host.getPipeline().getFirst().invoke(request, response);
 
     }

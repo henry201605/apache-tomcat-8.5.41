@@ -2896,31 +2896,40 @@ public class Request implements HttpServletRequest {
         if ((session != null) && !session.isValid()) {
             session = null;
         }
+        //如果session已经存在，则直接返回
         if (session != null) {
             return (session);
         }
 
         // Return the requested session if it exists and is valid
+        // 先获取所在context的manager对象
         Manager manager = context.getManager();
         if (manager == null) {
             return (null);      // Sessions are not supported
         }
+        //这个requestedSessionId就是从Http request中解析出来的
+        /*如果不为空则通过requestedSessionId到Session manager中获取session*/
         if (requestedSessionId != null) {
             try {
+                //manager管理的session池中找相应的session对象
                 session = manager.findSession(requestedSessionId);
             } catch (IOException e) {
                 session = null;
             }
+
+            //判断session是否为空及是否过期超时
             if ((session != null) && !session.isValid()) {
                 session = null;
             }
             if (session != null) {
+                //session对象有效，记录此次访问时间
                 session.access();
                 return (session);
             }
         }
 
         // Create a new session if requested and the response is not committed
+        // 如果参数是false，则不创建新session对象了，直接退出了
         if (!create) {
             return (null);
         }
@@ -2974,9 +2983,12 @@ public class Request implements HttpServletRequest {
         } else {
             sessionId = null;
         }
+        /*调用Session manager创建一个新的session；*/
+        //ManagerBase类
         session = manager.createSession(sessionId);
 
         // Creating a new session cookie based on that session
+        // 将新session的jsessionid写入cookie，传给browser
         if (session != null
                 && context.getServletContext()
                         .getEffectiveSessionTrackingModes()
@@ -2991,7 +3003,7 @@ public class Request implements HttpServletRequest {
         if (session == null) {
             return null;
         }
-
+        //记录session最新访问时间
         session.access();
         return session;
     }

@@ -660,6 +660,7 @@ public class StandardSession implements HttpSession, Session, Serializable {
     /**
      * Return the <code>isValid</code> flag for this session.
      */
+    /*主要是通过对比当前时间到上次活跃的时间是否超过了maxInactiveInterval，如果超过了就做expire处理；*/
     @Override
     public boolean isValid() {
 

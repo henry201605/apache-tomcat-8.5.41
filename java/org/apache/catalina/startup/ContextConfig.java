@@ -1112,7 +1112,7 @@ public class ContextConfig implements LifecycleListener {
         WebXml webXml = createWebXml();
 
         // Parse context level web.xml
-        // 解析tomcat\webapps\Context名称\WEB-INF\web.xml
+        /*解析tomcat\webapps\Context名称\WEB-INF\web.xml*/
         InputSource contextWebXml = getContextWebXmlSource();
         if (!webXmlParser.parseWebXml(contextWebXml, webXml, false)) {
             ok = false;
@@ -1371,6 +1371,7 @@ public class ContextConfig implements LifecycleListener {
                         servlet.getAsyncSupported().booleanValue());
             }
             wrapper.setOverridable(servlet.isOverridable());
+            //添加子容器
             context.addChild(wrapper);
         }
         for (Entry<String, String> entry :
@@ -1783,6 +1784,7 @@ public class ContextConfig implements LifecycleListener {
                     }
                 }
                 else {
+                    /* public static final String ApplicationWebXml = "/WEB-INF/web.xml";*/
                     stream = servletContext.getResourceAsStream
                         (Constants.ApplicationWebXml);
                     try {
